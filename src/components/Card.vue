@@ -11,7 +11,7 @@
 <script setup>
 import {computed} from "vue"
 
-const props = defineProps(["image", "isShown", "gameRun", "uid"])
+const props = defineProps(["image", "isShown"])
 
 const background = computed(() => {
   return props.isShown ? `url(src/assets/images/${props.image})` : null

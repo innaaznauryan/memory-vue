@@ -13,7 +13,7 @@
 </template>
 
 <script setup>
-import {onMounted, computed, ref} from "vue"
+import {onMounted, ref} from "vue"
 import Card from './Card.vue'
 
 const cards = [
@@ -26,23 +26,25 @@ const cards = [
   {image: "7.jpg", flipped: false, matched: false},
   {image: "8.jpg", flipped: false, matched: false}
 ]
+const deepCopy = cards.map(card => ({...card}))
+const duplicated = cards.concat(deepCopy)
 
-const duplicated = cards.concat(cards)
 const shuffled = ref([])
+const currentIndex = ref(null)
+const previousIndex = ref(null)
 
 const play = ref(false)
+const gameRun = ref(false)
+const isShown = ref(false)
+const succeeds = ref([])
 
-function shuffle () {
-  shuffled.value = [...duplicated]
+const shuffle = () => {
+  shuffled.value = duplicated
   for (let i = duplicated.length - 1; i >= 0; i--) {
     const randomIndex = Math.round(Math.random() * i);
     [shuffled.value[i], shuffled.value[randomIndex]] = [shuffled.value[randomIndex], shuffled.value[i]]
   }
 }
-
-const gameRun = ref(false)
-
-const isShown = ref(false)
 
 const handlePlay = () => {
   play.value = true
@@ -53,25 +55,16 @@ const handlePlay = () => {
   }, 5000);
 }
 
-const currentSelection = ref(null)
-const previousSelection = ref(null)
-
-const succeeds = ref([])
-
 const success = () => {
-  succeeds.value.push(checkImageA.value.image)
-  checkImageA.value = null
-  checkImageB.value = null
+
 }
 
 const fail = () => {
-  alert("Failed!")
-  checkImageA.value = null
-  checkImageB.value = null
+
 }
 
 const isVisible = (card, index) => {
-  return isShown.value || shuffled.value[index].matched || shuffled.value[index].flipped
+  return isShown.value || shuffled.value[index]?.matched || shuffled.value[index]?.flipped
       // || succeeds.value.includes(card.image)
 }
 
@@ -79,27 +72,28 @@ const flipCard = (index) => {
   if (shuffled.value[index].flipped || shuffled.value[index].matched) {
     return
   }
-  shuffled.value[index].flipped = true
-  if (!currentSelection.value) {
-    currentSelection.value = index
+  if (currentIndex.value === null) {
+    currentIndex.value = index
+    shuffled.value[index].flipped = true
   } else {
-    previousSelection.value = currentSelection.value
-    currentSelection.value = index
-
-    if (shuffled.value[previousSelection.value].image === shuffled.value[currentSelection.value].image) {
-      shuffled.value[previousSelection.value].matched = true
-      shuffled.value[currentSelection.value].matched = true
+    previousIndex.value = currentIndex.value
+    currentIndex.value = index
+    if (shuffled.value[previousIndex.value].image === shuffled.value[currentIndex.value].image) {
+      shuffled.value[previousIndex.value].matched = true
+      shuffled.value[currentIndex.value].matched = true
       // checkWinner()
     } else {
-      shuffled.value[previousSelection.value].flipped = false
-      shuffled.value[currentSelection.value].flipped = false
+      shuffled.value[previousIndex.value].flipped = false
+      shuffled.value[currentIndex.value].flipped = false
     }
+    previousIndex.value = null
+    currentIndex.value = null
+    console.log(shuffled.value)
   }
 }
 
 onMounted(() => {
   shuffle()
-  console.log(shuffled.value)
 })
 </script>
 
