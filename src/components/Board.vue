@@ -1,71 +1,43 @@
 <template>
-    <button v-if="!play" @click="handlePlay">Play</button>
-    <div class="board">
-        <div class="row" v-for="(row, index) in layout" :key="index">
-            <Card
-            v-for="(card, cardIndex) in row"
-            :key="cardIndex"
-            :gameRun 
-            :isShown = "isVisible(card, index + '' + cardIndex)"
-            :image="card"
-            :uid="index + '' + cardIndex"
-            @choose="check"
-            />
-        </div>
-    </div>
+  <button v-if="!play" @click="handlePlay">Play</button>
+  <div class="board">
+    <Card
+        v-for="(card, index) in shuffled"
+        :key="index"
+        :gameRun
+        :isShown="isVisible(card, index)"
+        :image="card.image"
+        @click="gameRun && flipCard(index)"
+    />
+  </div>
 </template>
 
 <script setup>
 import {onMounted, computed, ref} from "vue"
 import Card from './Card.vue'
 
-const cards = ["1.jpg", "2.jpg", "3.jpg", "4.jpg", "5.jpg", "6.jpg", "7.jpg", "8.jpg"]
+const cards = [
+  {image: "1.jpg", flipped: false, matched: false},
+  {image: "2.jpg", flipped: false, matched: false},
+  {image: "3.jpg", flipped: false, matched: false},
+  {image: "4.jpg", flipped: false, matched: false},
+  {image: "5.jpg", flipped: false, matched: false},
+  {image: "6.jpg", flipped: false, matched: false},
+  {image: "7.jpg", flipped: false, matched: false},
+  {image: "8.jpg", flipped: false, matched: false}
+]
 
-const duplicated = computed(() => {
-    return cards.concat(cards)
-})
+const duplicated = cards.concat(cards)
 const shuffled = ref([])
-
-const layout = computed(() => {
-    let result = []
-    shuffled.value.forEach((element, index) => {
-        !index || !(index % 4) ? result.push([element]) : result[result.length - 1].push(element)
-    })
-    return result
-})
 
 const play = ref(false)
 
-function shuffle() {
-    shuffled.value = duplicated.value
-    let currentIndex = shuffled.value.length,  randomIndex;
-
-  // While there remain elements to shuffle.
-  while (currentIndex > 0) {
-
-    // Pick a remaining element.
-    randomIndex = Math.floor(Math.random() * currentIndex);
-    currentIndex--;
-
-    // And swap it with the current element.
-    [shuffled.value[currentIndex], shuffled.value[randomIndex]] = [
-    shuffled.value[randomIndex], shuffled.value[currentIndex]];
-}
-
-  return shuffled.value;
-}
-
-function reset () {
-    shuffle()
-}
-
-function show () {
-    isShown.value = true
-    console.log(isShown.value)
-    setTimeout(() => {
-        isShown.value = false
-        gameRun.value = true
-    }, 5000);
+function shuffle () {
+  shuffled.value = [...duplicated]
+  for (let i = duplicated.length - 1; i >= 0; i--) {
+    const randomIndex = Math.round(Math.random() * i);
+    [shuffled.value[i], shuffled.value[randomIndex]] = [shuffled.value[randomIndex], shuffled.value[i]]
+  }
 }
 
 const gameRun = ref(false)
@@ -73,57 +45,82 @@ const gameRun = ref(false)
 const isShown = ref(false)
 
 const handlePlay = () => {
-    play.value = true
-    show()
+  play.value = true
+  isShown.value = true
+  setTimeout(() => {
+    isShown.value = false
+    gameRun.value = true
+  }, 5000);
 }
 
-const checkImageA = ref(null)
-const checkImageB = ref(null)
+const currentSelection = ref(null)
+const previousSelection = ref(null)
 
 const succeeds = ref([])
 
 const success = () => {
-    succeeds.value.push(checkImageA.value.image)
-    checkImageA.value = null
-    checkImageB.value = null
+  succeeds.value.push(checkImageA.value.image)
+  checkImageA.value = null
+  checkImageB.value = null
 }
 
 const fail = () => {
-    alert("Failed!")
-    checkImageA.value = null
-    checkImageB.value = null
+  alert("Failed!")
+  checkImageA.value = null
+  checkImageB.value = null
 }
 
-const isVisible = (image, uid) => {
-    return isShown.value ||
-    (checkImageA.value && uid === checkImageA.value.uid && !checkImageB.value) || 
-    (checkImageB.value && uid === checkImageB.value.uid && checkImageA.value.image !== checkImageB.value.image) ||
-    succeeds.value.includes(image)
+const isVisible = (card, index) => {
+  return isShown.value || shuffled.value[index].matched || shuffled.value[index].flipped
+      // || succeeds.value.includes(card.image)
 }
 
-const check = (obj) => {
-    checkImageA.value ? checkImageB.value = obj : checkImageA.value = obj
-    if (checkImageA.value && checkImageB.value) {
-        checkImageA.value.image === checkImageB.value.image ? success() : fail()
+const flipCard = (index) => {
+  if (shuffled.value[index].flipped || shuffled.value[index].matched) {
+    return
+  }
+  shuffled.value[index].flipped = true
+  if (!currentSelection.value) {
+    currentSelection.value = index
+  } else {
+    previousSelection.value = currentSelection.value
+    currentSelection.value = index
+
+    if (shuffled.value[previousSelection.value].image === shuffled.value[currentSelection.value].image) {
+      shuffled.value[previousSelection.value].matched = true
+      shuffled.value[currentSelection.value].matched = true
+      // checkWinner()
+    } else {
+      shuffled.value[previousSelection.value].flipped = false
+      shuffled.value[currentSelection.value].flipped = false
     }
+  }
 }
 
 onMounted(() => {
-    reset()
+  shuffle()
+  console.log(shuffled.value)
 })
 </script>
 
 <style scoped>
 .board {
-    max-width: 500px;
-    margin: 0 auto;
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 5px;
+  max-width: 500px;
+  margin: 0 auto;
 }
-.row {
-    display: flex;
-    gap: 5px;
-    margin-bottom: 5px;
-}
+
 button {
-    position: absolute;
+  position: absolute;
+  padding: 10px;
+  margin: 10px;
+  background-color: #eee2dc;
+  color: #ac3b61;
+  border: 0;
+  border-radius: 5px;
+  cursor: pointer;
+  font-weight: 600;
 }
 </style>
