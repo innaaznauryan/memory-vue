@@ -7,7 +7,7 @@
         :gameRun
         :isShown="isVisible(card, index)"
         :image="card.image"
-        @click="gameRun && flipCard(index)"
+        @click="gameRun && handleClick(index)"
     />
   </div>
 </template>
@@ -17,21 +17,19 @@ import {onMounted, ref} from "vue"
 import Card from './Card.vue'
 
 const cards = [
-  {image: "1.jpg", flipped: false, matched: false},
-  {image: "2.jpg", flipped: false, matched: false},
-  {image: "3.jpg", flipped: false, matched: false},
-  {image: "4.jpg", flipped: false, matched: false},
-  {image: "5.jpg", flipped: false, matched: false},
-  {image: "6.jpg", flipped: false, matched: false},
-  {image: "7.jpg", flipped: false, matched: false},
-  {image: "8.jpg", flipped: false, matched: false}
+  {image: "1.jpg", flipped: false},
+  {image: "2.jpg", flipped: false},
+  {image: "3.jpg", flipped: false},
+  {image: "4.jpg", flipped: false},
+  {image: "5.jpg", flipped: false},
+  {image: "6.jpg", flipped: false},
+  {image: "7.jpg", flipped: false},
+  {image: "8.jpg", flipped: false}
 ]
 const deepCopy = cards.map(card => ({...card}))
 const duplicated = cards.concat(deepCopy)
 
 const shuffled = ref([])
-const currentIndex = ref(null)
-const previousIndex = ref(null)
 
 const play = ref(false)
 const gameRun = ref(false)
@@ -52,7 +50,7 @@ const handlePlay = () => {
   setTimeout(() => {
     isShown.value = false
     gameRun.value = true
-  }, 5000);
+  }, 1000);
 }
 
 const success = () => {
@@ -62,33 +60,34 @@ const success = () => {
 const fail = () => {
 
 }
+const flippedIndexes = ref([])
 
 const isVisible = (card, index) => {
-  return isShown.value || shuffled.value[index]?.matched || shuffled.value[index]?.flipped
+  return isShown.value || shuffled.value[index].flipped
       // || succeeds.value.includes(card.image)
 }
 
-const flipCard = (index) => {
-  if (shuffled.value[index].flipped || shuffled.value[index].matched) {
-    return
-  }
-  if (currentIndex.value === null) {
-    currentIndex.value = index
+function handleClick (index) {
+  if (!flippedIndexes.value.length) {
+    flippedIndexes.value.push(index)
     shuffled.value[index].flipped = true
-  } else {
-    previousIndex.value = currentIndex.value
-    currentIndex.value = index
-    if (shuffled.value[previousIndex.value].image === shuffled.value[currentIndex.value].image) {
-      shuffled.value[previousIndex.value].matched = true
-      shuffled.value[currentIndex.value].matched = true
+  } else if (flippedIndexes.value.length === 1) {
+    flippedIndexes.value.push(index)
+    shuffled.value[index].flipped = true
+    if (shuffled.value[flippedIndexes.value[0]].image === shuffled.value[flippedIndexes.value[1]].image) {
+      flippedIndexes.value = []
+      const sound = new Audio('src/assets/audio/success.mp3')
+      sound.play()
       // checkWinner()
     } else {
-      shuffled.value[previousIndex.value].flipped = false
-      shuffled.value[currentIndex.value].flipped = false
+      setTimeout(() => {
+        shuffled.value[flippedIndexes.value[0]].flipped = false
+        shuffled.value[flippedIndexes.value[1]].flipped = false
+        flippedIndexes.value = []
+        const sound = new Audio('src/assets/audio/fail.mp3')
+        sound.play()
+      }, 1000)
     }
-    previousIndex.value = null
-    currentIndex.value = null
-    console.log(shuffled.value)
   }
 }
 
