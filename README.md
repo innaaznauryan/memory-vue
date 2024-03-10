@@ -1,6 +1,6 @@
 ## Vue Memory Game  
 
-This is a simple memory game developed in Vue.js. Here's a brief overview:  
+This is a simple memory game developed in Vue.js. Check out live demo here: [Memory Game](https://memorygame-vue3.netlify.app/)   
 
 ### Features:  
 - Flip cards and try to find matching pairs.  

@@ -38,7 +38,7 @@ const lives = ref(Math.floor(cards.length * 70 / 100))
 const gameOver = ref(false)
 const winner = ref(false)
 
-const getCards = (cards) => {
+const getCards = () => {
   const cardsCopy = cards.map(card => ({...card}))
   const duplicated = [...cards, ...cardsCopy]
   shuffled.value = duplicated.map(card => ({...card, flipped: false}))
@@ -69,7 +69,7 @@ const resetGame = () => {
     winner.value = false
     lives.value = Math.floor(cards.length * 70 / 100)
     successCount.value = 0
-    getCards(cards)
+    getCards()
     shuffle()
   }, 5000)
 }
@@ -138,7 +138,7 @@ watch([lives, successCount], () => {
 })
 
 onMounted(() => {
-  getCards(cards)
+  getCards()
   shuffle()
 })
 </script>

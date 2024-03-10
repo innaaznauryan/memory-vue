@@ -1,16 +1,15 @@
 <template>
   <div
     class="card-container"
-    :style="{'cursor': gameRun ? 'pointer' : 'default'}"
-    @click="handleClick">
-      <div 
-        class="front-card"
-        :style="{'background-image': `url(src/assets/images/${image})`, 'transform': isShown ? 'rotateY(0)' : 'rotateY(180deg)'}">
-      </div>
-      <div 
-        class="back-card" 
-        :style="{'transform': isShown ? 'rotateY(-180deg)' : 'rotateY(0)'}">
-      </div>
+    :style="{'cursor': gameRun ? 'pointer' : 'default'}">
+    <div 
+      class="front-card" 
+      :style="{'transform': isShown ? 'rotateY(-180deg)' : 'rotateY(0)'}">
+    </div>
+    <div 
+      class="back-card"
+      :style="{'background-image': `url(src/assets/images/${image})`, 'transform': isShown ? 'rotateY(0)' : 'rotateY(180deg)'}">
+    </div>
   </div>
 </template>
 
@@ -34,13 +33,11 @@ defineProps(["image", "gameRun", "isShown"])
 }
 
 .front-card {
-  transform: rotateY(180deg);
-  background-position: center;
-  background-size: cover;
+  background-color: #d9b08c;
 }
 
 .back-card {
-  transform: rotateY(0);
-  background-color: #d9b08c;
+  background-position: center;
+  background-size: cover;
 }
 </style>
