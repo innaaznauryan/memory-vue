@@ -8,7 +8,7 @@
     </div>
     <div 
       class="back-card"
-      :style="{'background-image': `url(src/assets/images/${image})`, 'transform': isShown ? 'rotateY(0)' : 'rotateY(180deg)'}">
+      :style="{'background-image': `url(/src/assets/images/${image})`, 'transform': isShown ? 'rotateY(0)' : 'rotateY(180deg)'}">
     </div>
   </div>
 </template>

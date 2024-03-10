@@ -100,7 +100,7 @@ const isVisible = (index) => {
 
 const success = () => {
   flippedIndexes.value = []
-  const sound = new Audio('src/assets/audio/success.mp3')
+  const sound = new Audio('/src/assets/audio/success.mp3')
   sound.play()
   successCount.value++
 }
@@ -110,20 +110,20 @@ const fail = () => {
   shuffled.value[flippedIndexes.value[1]].flipped = false
   flippedIndexes.value = []
   lives.value--
-  const sound = new Audio('src/assets/audio/fail.mp3')
+  const sound = new Audio('/src/assets/audio/fail.mp3')
   sound.play()
 }
 
 const win = () => {
   winner.value = true
-  const sound = new Audio('src/assets/audio/congrats.mp3')
+  const sound = new Audio('/src/assets/audio/congrats.mp3')
   sound.play()
   resetGame()
 }
 
 const lose = () => {
   winner.value = false
-  const sound = new Audio('src/assets/audio/lose.mp3')
+  const sound = new Audio('/src/assets/audio/lose.mp3')
   sound.play()
   resetGame()
 }
