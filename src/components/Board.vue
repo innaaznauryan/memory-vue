@@ -21,8 +21,20 @@
 <script setup>
 import {onMounted, ref, watch} from "vue"
 import Card from './Card.vue'
+import img1 from "/src/assets/images/1.jpg"
+import img2 from "/src/assets/images/2.jpg"
+import img3 from "/src/assets/images/3.jpg"
+import img4 from "/src/assets/images/4.jpg"
+import img5 from "/src/assets/images/5.jpg"
+import img6 from "/src/assets/images/6.jpg"
+import img7 from "/src/assets/images/7.jpg"
+import img8 from "/src/assets/images/8.jpg"
+import congratsSound from "/src/assets/audio/congrats.mp3"
+import failSound from "/src/assets/audio/fail.mp3"
+import loseSound from "/src/assets/audio/lose.mp3"
+import successSound from "/src/assets/audio/success.mp3"
 
-const cards = [{image: "1.jpg"}, {image: "2.jpg"}, {image: "3.jpg"}, {image: "4.jpg"}, {image: "5.jpg"}, {image: "6.jpg"}, {image: "7.jpg"}, {image: "8.jpg"}]
+const cards = [{image: img1}, {image: img2}, {image: img3}, {image: img4}, {image: img5}, {image: img6}, {image: img7}, {image: img8}]
 
 const vGridTemplate = {
   mounted: element => element.style["grid-template-columns"] = `repeat(${Math.sqrt(cards.length * 2)}, 1fr)`
@@ -100,7 +112,7 @@ const isVisible = (index) => {
 
 const success = () => {
   flippedIndexes.value = []
-  const sound = new Audio('/src/assets/audio/success.mp3')
+  const sound = new Audio(successSound)
   sound.play()
   successCount.value++
 }
@@ -110,20 +122,20 @@ const fail = () => {
   shuffled.value[flippedIndexes.value[1]].flipped = false
   flippedIndexes.value = []
   lives.value--
-  const sound = new Audio('/src/assets/audio/fail.mp3')
+  const sound = new Audio(failSound)
   sound.play()
 }
 
 const win = () => {
   winner.value = true
-  const sound = new Audio('/src/assets/audio/congrats.mp3')
+  const sound = new Audio(congratsSound)
   sound.play()
   resetGame()
 }
 
 const lose = () => {
   winner.value = false
-  const sound = new Audio('/src/assets/audio/lose.mp3')
+  const sound = new Audio(loseSound)
   sound.play()
   resetGame()
 }
@@ -159,8 +171,8 @@ button {
   top: 0;
   padding: 10px;
   margin: 10px 20px;
-  background-color: #d9b08c;
-  color: #116466;
+  background-color: #928f86;
+  color: #d1e8e2;
   border: 0;
   border-radius: 5px;
   cursor: pointer;
@@ -173,14 +185,16 @@ button {
   right: 0;
   top: 0;
   margin: 10px 20px;
-  color: #116466;
+  color: #928f86;
   font-weight: 600;
+  font-size: 20px;
 }
 
 .gameOver {
   text-align: center;
   height: 30px;
-  color: #116466;
+  color: #928f86;
   font-weight: 600;
+  font-size: 20px;
 }
 </style>
