@@ -1,19 +1,29 @@
 <template>
-  <button v-if="!play" @click="handlePlay">Play</button>
-  <span class="lives">Lifes left: {{ lives }}</span>
+  <transition name="fade" mode="out-in">
+    <div class="header" :key="lives">
+      <button v-if="!play" @click="handlePlay">Play</button>
+      <div v-if="!play" class="startMessage">
+        <p>Click Play to start.</p>
+        <p>You have 5 seconds to memorize cards!</p>
+      </div>
+      <span class="lives">Lifes left: {{ lives }}</span>
+    </div>
+  </transition>
   <div class="board" v-grid-template>
     <Card
-      v-for="(card, index) in shuffled"
-      :key="index"
-      :image="card.image"
-      :gameRun="gameRun"
-      :isShown="isVisible(index)"
-      @click="gameRun && handleClick(index)"
+        v-for="(card, index) in shuffled"
+        :key="index"
+        :index="index"
+        :image="card.image"
+        :shuffled="shuffled"
+        :gameRun="gameRun"
+        :isShown="isShown"
+        @click="gameRun && handleClick(index)"
     />
   </div>
   <div class="gameOver">
     <span v-if="gameOver">
-      {{ winner ? 'Congratulations! You win!' : 'Sorry, you lose :(' }}
+      {{ winner ? 'Congratulations! You win!' : 'Sorry, you lost :(' }}
     </span>
   </div>
 </template>
@@ -87,7 +97,7 @@ const resetGame = () => {
 }
 
 const handleClick = (index) => {
-  if(shuffled.value[index].flipped) {
+  if (shuffled.value[index].flipped) {
     return
   }
   if (!flippedIndexes.value.length) {
@@ -104,10 +114,6 @@ const handleClick = (index) => {
       }, 1000)
     }
   }
-}
-
-const isVisible = (index) => {
-  return isShown.value || shuffled.value[index].flipped
 }
 
 const success = () => {
@@ -156,45 +162,77 @@ onMounted(() => {
 </script>
 
 <style scoped>
+.header {
+  max-width: 80vmin;
+  height: 50px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 10px;
+  margin: 20px auto;
+  text-align: center;
+
+  p {
+    color: #97c1a9;
+    font-weight: 600;
+    padding: 2px;
+    font-size: 14px;
+    @media (max-width: 768px) {
+      font-size: 12px;
+    }
+  }
+}
+
 .board {
   display: grid;
   gap: 5px;
   max-width: 80vmin;
-  margin: 10px auto;
-  @media (max-width: 768px) {
-    margin: 70px auto 10px;
-  }
+  margin: 0 auto;
 }
 
 button {
-  position: absolute;
-  top: 0;
   padding: 10px;
-  margin: 10px 20px;
-  background-color: #928f86;
-  color: #d1e8e2;
+  background-color: #97c1a9;
+  color: #d4f0f0;
   border: 0;
   border-radius: 5px;
   cursor: pointer;
   font-weight: 600;
   font-size: 20px;
+  @media (max-width: 768px) {
+    font-size: 14px;
+  }
 }
 
 .lives {
-  position: absolute;
-  right: 0;
-  top: 0;
-  margin: 10px 20px;
-  color: #928f86;
+  color: #97c1a9;
   font-weight: 600;
   font-size: 20px;
+  white-space: nowrap;
+  @media (max-width: 768px) {
+    font-size: 14px;
+  }
 }
 
 .gameOver {
   text-align: center;
   height: 30px;
-  color: #928f86;
+  color: #97c1a9;
   font-weight: 600;
-  font-size: 20px;
+  font-size: 28px;
+  padding: 20px;
+  @media (max-width: 768px) {
+    font-size: 20px;
+  }
+}
+
+.fade-enter-active,
+.fade-leave-active {
+  transition: 0.5s ease;
+}
+
+.fade-enter-from,
+.fade-leave-to {
+  opacity: 0;
 }
 </style>

@@ -4,17 +4,21 @@
     :style="{'cursor': gameRun ? 'pointer' : 'default'}">
     <div 
       class="front-card" 
-      :style="{'transform': isShown ? 'rotateY(-180deg)' : 'rotateY(0)'}">
+      :style="{'transform': isVisible ? 'rotateY(-180deg)' : 'rotateY(0)'}">
     </div>
     <div 
       class="back-card"
-      :style="{'background-image': `url(${image})`, 'transform': isShown ? 'rotateY(0)' : 'rotateY(180deg)'}">
+      :style="{'background-image': `url(${image})`, 'transform': isVisible ? 'rotateY(0)' : 'rotateY(180deg)'}">
     </div>
   </div>
 </template>
 
 <script setup>
-defineProps(["image", "gameRun", "isShown"])
+import {computed} from "vue"
+const props = defineProps(["index", "image", "shuffled", "gameRun", "isShown"])
+const isVisible = computed(() => {
+  return props.isShown || props.shuffled[props.index].flipped
+})
 </script>
 
 <style scoped>
@@ -33,7 +37,7 @@ defineProps(["image", "gameRun", "isShown"])
 }
 
 .front-card {
-  background-color: #928f86;
+  background-color: #97c1a9;
 }
 
 .back-card {
