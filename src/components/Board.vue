@@ -1,12 +1,12 @@
 <template>
   <transition name="fade" mode="out-in">
     <div class="header" :key="lives">
-      <button v-if="!play" @click="handlePlay">Play</button>
-      <div v-if="!play" class="startMessage">
+      <div v-if="!play">
         <p>Click Play to start.</p>
-        <p>You have 5 seconds to memorize cards!</p>
+        <p>Memorize cards in 5 seconds!</p>
       </div>
-      <span class="lives">Lifes left: {{ lives }}</span>
+      <button v-if="!play" @click="handlePlay">Play</button>
+      <span v-if="play" class="lives">Lives left: {{ lives }}</span>
     </div>
   </transition>
   <div class="board" v-grid-template>
@@ -22,9 +22,11 @@
     />
   </div>
   <div class="gameOver">
-    <span v-if="gameOver">
-      {{ winner ? 'Congratulations! You win!' : 'Sorry, you lost :(' }}
-    </span>
+    <transition name="fade">
+      <span v-if="gameOver">
+        {{ winner ? 'Congratulations! You win!' : 'Sorry, you lost :(' }}
+      </span>
+    </transition>
   </div>
 </template>
 
@@ -170,7 +172,6 @@ onMounted(() => {
   align-items: center;
   gap: 10px;
   margin: 20px auto;
-  text-align: center;
 
   p {
     color: #97c1a9;
