@@ -5,6 +5,10 @@
 }
 
 body {
-    background-color: #ddd;
+    background-color: #fcc157;
     font-family: sans-serif;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    min-height: 100vh;
 }
