@@ -174,7 +174,7 @@ onMounted(() => {
   margin: 20px auto;
 
   p {
-    color: #97c1a9;
+    color: #382d7c;
     font-weight: 600;
     padding: 2px;
     font-size: 14px;
@@ -193,8 +193,8 @@ onMounted(() => {
 
 button {
   padding: 10px;
-  background-color: #97c1a9;
-  color: #d4f0f0;
+  background-color: #382d7c;
+  color: #ddd;
   border: 0;
   border-radius: 5px;
   cursor: pointer;
@@ -206,7 +206,7 @@ button {
 }
 
 .lives {
-  color: #97c1a9;
+  color: #382d7c;
   font-weight: 600;
   font-size: 20px;
   white-space: nowrap;
@@ -218,7 +218,7 @@ button {
 .gameOver {
   text-align: center;
   height: 30px;
-  color: #97c1a9;
+  color: #382d7c;
   font-weight: 600;
   font-size: 28px;
   padding: 20px;

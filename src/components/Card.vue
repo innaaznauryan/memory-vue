@@ -37,7 +37,8 @@ const isVisible = computed(() => {
 }
 
 .front-card {
-  background-color: #97c1a9;
+  background-color: #382d7c;
+  box-shadow: inset 0 0 20px #ddd;
 }
 
 .back-card {
