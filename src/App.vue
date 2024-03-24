@@ -1,9 +1,16 @@
 <template>
-<!--    <main>-->
+    <main>
         <Board/>
-<!--    </main>-->
+    </main>
 </template>
 
 <script setup>
-    import Board from './components/Board.vue'
+import Board from './components/Board.vue'
 </script>
+
+<style scoped>
+main {
+    max-width: 70vmin;
+    margin: 0 auto;
+}
+</style>
